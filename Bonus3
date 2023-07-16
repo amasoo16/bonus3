@@ -1,0 +1,72 @@
+using System;
+using System.IO;
+
+class Program
+{
+    //Abdullah Masood ~ 3011342047 ~ Bonus Assignment Three
+    static void Main(string[] args)
+    {
+        Console.Write("Enter the filename: ");
+        string filename = Console.ReadLine();
+
+        try
+        {
+            double average = CalculateAverageFromFile(filename);
+            Console.WriteLine($"The average of the numbers is: {average}");
+        }
+        catch (FileNotFoundException)
+        {
+            Console.WriteLine($"Error: File '{filename}' not found.");
+        }
+        catch (IOException ex)
+        {
+            Console.WriteLine($"An error occurred while reading the file: {ex.Message}");
+        }
+        catch (FormatException)
+        {
+            Console.WriteLine("Error: Invalid number found in the file.");
+        }
+        catch (DivideByZeroException)
+        {
+            Console.WriteLine("Error: The list of numbers is empty.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An unexpected error occurred: {ex.Message}");
+        }
+        finally
+        {
+        }
+    }
+
+    static double CalculateAverageFromFile(string filename)
+    {
+        double sum = 0;
+        int count = 0;
+
+        using (StreamReader reader = new StreamReader(filename))
+        {
+            string line;
+            while ((line = reader.ReadLine()) != null)
+            {
+                double number;
+                if (double.TryParse(line, out number))
+                {
+                    sum += number;
+                    count++;
+                }
+                else
+                {
+                    throw new FormatException();
+                }
+            }
+        }
+
+        if (count == 0)
+        {
+            throw new DivideByZeroException();
+        }
+
+        return sum / count;
+    }
+}
